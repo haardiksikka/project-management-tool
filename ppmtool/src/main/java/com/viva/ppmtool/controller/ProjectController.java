@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.viva.ppmtool.domain.Project;
 import com.viva.ppmtool.services.ProjectService;
+import com.viva.ppmtool.services.ValidationMapService;
 
 @RestController
 @RequestMapping("/api/project")
@@ -21,11 +22,15 @@ public class ProjectController {
 	@Autowired 
 	private ProjectService projectService;
 	
+	@Autowired
+	private ValidationMapService validationMapService;
+	
 	@PostMapping("")
 	public ResponseEntity<?> createNewProject(@Valid @RequestBody Project project, BindingResult result){
 		
-		if(result.hasErrors()) {
-			return new ResponseEntity<String>("Invalid Object", HttpStatus.BAD_REQUEST);
+		ResponseEntity<?> errorMap = validationMapService.getErrorMap(result);
+		if(errorMap!=null) {
+			return errorMap;
 		}
 		
 		return new ResponseEntity<Project>(projectService.saveOrUpdateProject(project),HttpStatus.CREATED);
