@@ -6,12 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.viva.ppmtool.domain.Project;
@@ -19,7 +19,7 @@ import com.viva.ppmtool.services.ProjectService;
 import com.viva.ppmtool.services.ValidationMapService;
 
 @RestController
-@RequestMapping("/api/project")
+@CrossOrigin
 public class ProjectController {
 
 	@Autowired 
@@ -28,7 +28,7 @@ public class ProjectController {
 	@Autowired
 	private ValidationMapService validationMapService;
 	
-	@PostMapping("")
+	@PostMapping("/api/project")
 	public ResponseEntity<?> createNewProject(@Valid @RequestBody Project project, BindingResult result){
 		
 		ResponseEntity<?> errorMap = validationMapService.getErrorMap(result);
@@ -39,15 +39,15 @@ public class ProjectController {
 		return new ResponseEntity<Project>(projectService.saveOrUpdateProject(project),HttpStatus.CREATED);
 	}
 	
-	@GetMapping("/{projectId}")
+	@GetMapping("/api/project/{projectId}")
 	public ResponseEntity<?> getProjectByIdentifier(@PathVariable String projectId){
 		return new ResponseEntity<Project>(projectService.findProjectByIdentifier(projectId), HttpStatus.OK);
 	}
-	@GetMapping("/all")
+	@GetMapping("/api/project/all")
 	public Iterable<Project> getAllProjects(){
 		return projectService.findAll();
 	}
-	@DeleteMapping("/{projectId}")
+	@DeleteMapping("/api/project/{projectId}")
 	public ResponseEntity<?> deleteProject(@PathVariable String projectId){
 		projectService.deleteProject(projectId);
 		
