@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import ProjectItem from "./Project/ProjectItem";
-import Header from "./Layout/Header";
 import CreateProjectButton from "./Project/CreateProjectButton";
+import { Link } from "react-router-dom";
 
 export default class Dashboard extends Component {
   render() {
@@ -12,9 +12,9 @@ export default class Dashboard extends Component {
             <div className="col-md-12">
               <h1 className="display-4 text-center">Projects</h1>
               <br />
-              <a href="ProjectForm.html" className="btn btn-lg btn-info">
+              <Link to="ProjectForm.html" className="btn btn-lg btn-info">
                 <CreateProjectButton></CreateProjectButton>
-              </a>
+              </Link>
               <br />
               <hr />
               <ProjectItem />

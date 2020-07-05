@@ -1,14 +1,18 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { createProject } from "../../actions/projectAction";
 
-class AddProject extends React.Component {
+class AddProject extends Component {
   constructor() {
     super();
     this.state = {
       projectName: "",
       projectIdentifier: "",
       description: "",
-      start_date: "",
-      end_date: "",
+      startDate: "",
+      endDate: "",
+      errors: {},
     };
 
     //bind onChange
@@ -17,23 +21,38 @@ class AddProject extends React.Component {
     // this.onSubmit = this.onSubmit.bind(this);
   }
 
-  //if we will not bind context then this will get undefined
+  //if we do not bind method with context in contructor then we can also use fat arrow for that
   onSubmit = (e) => {
     e.preventDefault();
     const projectObject = {
       projectName: this.state.projectName,
       projectIdentifier: this.state.projectIdentifier,
       description: this.state.description,
-      start_date: this.state.start_date,
-      end_date: this.state.end_date,
+      startDate: this.state.startDate,
+      endDate: this.state.endDate,
     };
     console.log(projectObject);
+
+    //call createProject action which takes project and history as argument
+    this.props.createProject(projectObject, this.props.history);
   };
+
+  //if we will not bind context then this will get undefined
   //change state of property on change
   onChange(e) {
+    //set state updates the state of the component with new value it takes {someField:someValue} as a parameter
+    //here we are making it generic as we are telling react to get the value and field name of component using target saves us from writing same thing for every field we have in this component.
     this.setState({ [e.target.name]: e.target.value });
   }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.errors) {
+      this.setState({ errors: nextProps.errors });
+    }
+  }
+  //In jsx syntax,  inside render we surrounds variables with curly brances to treat them as variable
   render() {
+    const { errors } = this.state;
     return (
       <div className="register">
         <div className="container">
@@ -53,6 +72,7 @@ class AddProject extends React.Component {
                     value={this.state.projectName}
                     onChange={this.onChange}
                   />
+                  <p>{errors.projectName}</p>
                 </div>
                 <div className="form-group">
                   <input
@@ -62,8 +82,8 @@ class AddProject extends React.Component {
                     name="projectIdentifier"
                     value={this.state.projectIdentifier}
                     onChange={this.onChange}
-                    disabled
                   />
+                  <p>{errors.projectIdentifier}</p>
                 </div>
 
                 <div className="form-group">
@@ -74,14 +94,15 @@ class AddProject extends React.Component {
                     value={this.state.description}
                     onChange={this.onChange}
                   ></textarea>
+                  <p>{errors.description}</p>
                 </div>
                 <h6>Start Date</h6>
                 <div className="form-group">
                   <input
                     type="date"
                     className="form-control form-control-lg"
-                    name="start_date"
-                    value={this.state.start_date}
+                    name="startDate"
+                    value={this.state.startDate}
                     onChange={this.onChange}
                   />
                 </div>
@@ -90,8 +111,8 @@ class AddProject extends React.Component {
                   <input
                     type="date"
                     className="form-control form-control-lg"
-                    name="end_date"
-                    value={this.state.end_date}
+                    name="endDate"
+                    value={this.state.endDate}
                     onChange={this.onChange}
                   />
                 </div>
@@ -109,4 +130,13 @@ class AddProject extends React.Component {
   }
 }
 
-export default AddProject;
+AddProject.propTypes = {
+  createProject: PropTypes.func.isRequired,
+  errors: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  errors: state.errors,
+});
+
+export default connect(mapStateToProps, { createProject })(AddProject);
