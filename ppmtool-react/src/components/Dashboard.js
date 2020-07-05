@@ -2,9 +2,17 @@ import React, { Component } from "react";
 import ProjectItem from "./Project/ProjectItem";
 import CreateProjectButton from "./Project/CreateProjectButton";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+import { getProjects } from "../actions/projectAction";
 
-export default class Dashboard extends Component {
+import PropTypes from "prop-types";
+
+class Dashboard extends Component {
+  componentDidMount() {
+    this.props.getProjects();
+  }
   render() {
+    const { projects } = this.props.project;
     return (
       <div className="projects">
         <div className="container">
@@ -17,7 +25,9 @@ export default class Dashboard extends Component {
               </Link>
               <br />
               <hr />
-              <ProjectItem />
+              {projects.map((project) => (
+                <ProjectItem key={project.id} project={project} />
+              ))}
             </div>
           </div>
         </div>
@@ -25,3 +35,15 @@ export default class Dashboard extends Component {
     );
   }
 }
+
+Dashboard.protoTypes = {
+  getProjects: PropTypes.func.isRequired,
+  project: PropTypes.object.isRequired,
+};
+
+const mapStateToProp = (state) => ({
+  //state.project points towards my reducer
+  project: state.project,
+});
+
+export default connect(mapStateToProp, { getProjects })(Dashboard);
