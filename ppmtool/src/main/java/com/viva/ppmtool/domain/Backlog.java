@@ -16,9 +16,15 @@ import javax.persistence.OneToOne;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-public class Backlog {
+public class Backlog implements java.io.Serializable {
 
-    @Id
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -6693236265213219264L;
+	
+	
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Integer PTSequence = 0;
@@ -79,4 +85,8 @@ public class Backlog {
     public void setProjectTasks(List<ProjectTask> projectTasks) {
         this.projectTasks = projectTasks;
     }
+
+	
+    
+    
 }

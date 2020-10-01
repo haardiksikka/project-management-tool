@@ -1,6 +1,9 @@
 package com.viva.ppmtool.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.viva.ppmtool.domain.Backlog;
@@ -18,6 +21,8 @@ public class ProjectService {
 	@Autowired
 	private BacklogRepository backlogRepository;
 	
+	
+	@CachePut(value = "projectDetailsCache", key = "#result.projectIdentifier")
 	public Project saveOrUpdateProject(Project project) {
 		
 		try {
@@ -41,10 +46,11 @@ public class ProjectService {
 		}
 	}
 	
-	public Project findProjectByIdentifier(String projectId) {
-		Project project = projectRepository.findByProjectIdentifier(projectId.toUpperCase());
+	@Cacheable(value = "projectDetailsCache", key= "#projectIdentifier")
+	public Project findProjectByIdentifier(String projectIdentifier) {
+		Project project = projectRepository.findByProjectIdentifier(projectIdentifier.toUpperCase());
 		if(project == null) {
-			throw new ProjectIdException("Porject Id: "+projectId.toUpperCase()+" does not exist");
+			throw new ProjectIdException("Porject Id: "+projectIdentifier.toUpperCase()+" does not exist");
 		}
 		return project;
 	}
@@ -53,11 +59,12 @@ public class ProjectService {
 		return projectRepository.findAll();
 	}
 	
-	public void deleteProject(String projectId) {
-		Project project = projectRepository.findByProjectIdentifier(projectId.toUpperCase());
+	@CacheEvict(value = "projectDetailsCache")
+	public void deleteProject(String projectIdentifier) {
+		Project project = projectRepository.findByProjectIdentifier(projectIdentifier.toUpperCase());
 		
 		if(project == null) {
-			throw new ProjectIdException("Project with id "+projectId.toUpperCase()+"does not exist");
+			throw new ProjectIdException("Project with id "+projectIdentifier.toUpperCase()+"does not exist");
 		}
 		
 		projectRepository.delete(project);

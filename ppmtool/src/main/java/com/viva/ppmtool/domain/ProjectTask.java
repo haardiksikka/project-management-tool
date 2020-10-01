@@ -17,9 +17,14 @@ import javax.validation.constraints.NotBlank;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-public class ProjectTask {
+public class ProjectTask implements java.io.Serializable {
 
-    @Id
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 4832083639833654267L;
+	
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(updatable = false, unique = true)
@@ -142,20 +147,5 @@ public class ProjectTask {
         this.update_At = new Date();
     }
 
-    @Override
-    public String toString() {
-        return "ProjectTask{" +
-                "id=" + id +
-                ", projectSequence='" + projectSequence + '\'' +
-                ", summary='" + summary + '\'' +
-                ", acceptanceCriteria='" + acceptanceCriteria + '\'' +
-                ", status='" + status + '\'' +
-                ", priority=" + priority +
-                ", dueDate=" + dueDate +
-                ", backlog=" + backlog +
-                ", projectIdentifier='" + projectIdentifier + '\'' +
-                ", create_At=" + create_At +
-                ", update_At=" + update_At +
-                '}';
-    }
+
 }

@@ -1,0 +1,4 @@
+#Key and value types
+#Thu Oct 01 05:34:33 PDT 2020
+keyType=java.lang.String
+valueType=com.viva.ppmtool.domain.Project
